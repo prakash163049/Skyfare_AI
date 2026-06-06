@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyFare AI – Flight Price Predictor</title>
+  <meta name="description"
+    content="Get instant AI-powered flight fare predictions. Compare prices, plan smarter, and fly for less with SkyFare AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+
+<body>
+  <!-- Animated Background -->
+  <div class="bg-canvas">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="stars" id="stars"></div>
+  </div>
+
+  <!-- Header / Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+          </svg>
+        </div>
+        <span class="brand-name">SkyFare <em>AI</em></span>
+      </div>
+      <nav class="nav-links">
+        <a href="#predictor" class="nav-link">Predict</a>
+        <a href="#how-it-works" class="nav-link">How it Works</a>
+        <a href="#features" class="nav-link">Features</a>
+      </nav>
+      <button class="nav-cta" onclick="document.getElementById('predictor').scrollIntoView({behavior:'smooth'})">
+        Get Price
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        AI-Powered Prediction
+      </div>
+      <h1 class="hero-title">
+        Know Your Fare<br />
+        <span class="gradient-text">Before You Book</span>
+      </h1>
+      <p class="hero-subtitle">
+        Harness machine learning to predict flight prices instantly.
+        Stop overpaying — let our AI find the best fare for your journey.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('predictor').scrollIntoView({behavior:'smooth'})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          Predict Now
+        </button>
+        <button class="btn-ghost" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">
+          How it Works
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">98%</span>
+          <span class="stat-label">Accuracy</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">500K+</span>
+          <span class="stat-label">Fares Analyzed</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">&lt;1s</span>
+          <span class="stat-label">Prediction Time</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="plane-card">
+        <div class="plane-card-inner">
+          <div class="flight-path">
+            <div class="airport">DEL</div>
+            <div class="path-line">
+              <div class="plane-dot">✈</div>
+            </div>
+            <div class="airport">BOM</div>
+          </div>
+          <div class="card-price">
+            <span class="price-label">Estimated Fare</span>
+            <span class="price-value">₹ 4,820</span>
+          </div>
+          <div class="card-tags">
+            <span class="tag">IndiGo</span>
+            <span class="tag">Non-Stop</span>
+            <span class="tag">2h 10m</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Predictor Section -->
+  <section class="predictor-section" id="predictor">
+    <div class="section-header">
+      <div class="section-badge">Flight Fare Predictor</div>
+      <h2 class="section-title">Enter Your Flight Details</h2>
+      <p class="section-sub">Fill in the form below and our AI will predict the fare instantly</p>
+    </div>
+
+    <div class="predictor-wrapper">
+      <form class="predictor-form" id="predictForm" onsubmit="predictFare(event)">
+
+        <!-- Row 1: Airline & Stops -->
+        <div class="form-row">
+          <div class="form-group" id="group-airline">
+            <label for="airline" class="form-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+              </svg>
+              Airline
+            </label>
+            <div class="select-wrapper">
+              <select id="airline" name="airline" required>
+                <option value="" disabled selected>Select Airline</option>
+                <option value="IndiGo">IndiGo</option>
+                <option value="Air India">Air India</option>
+                <option value="Jet Airways">Jet Airways</option>
+                <option value="SpiceJet">SpiceJet</option>
+                <option value="Multiple carriers">Multiple Carriers</option>
+                <option value="GoAir">GoAir</option>
+                <option value="Vistara">Vistara</option>
+                <option value="Air Asia">Air Asia</option>
+                <option value="Trujet">Trujet</option>
+              </select>
+              <div class="select-arrow">▾</div>
+            </div>
+          </div>
+
+          <div class="form-group" id="group-stops">
+            <label for="stops" class="form-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Total Stops
+            </label>
+            <div class="stops-grid" id="stops-grid">
+              <button type="button" class="stop-btn active" data-value="0"
+                onclick="selectStop(this, 0)">Non-Stop</button>
+              <button type="button" class="stop-btn" data-value="1" onclick="selectStop(this, 1)">1 Stop</button>
+              <button type="button" class="stop-btn" data-value="2" onclick="selectStop(this, 2)">2 Stops</button>
+              <button type="button" class="stop-btn" data-value="3" onclick="selectStop(this, 3)">3+ Stops</button>
+            </div>
+            <input type="hidden" id="stops" name="stops" value="0" />
+          </div>
+        </div>
+
+        <!-- Row 2: Source & Destination -->
+        <div class="form-row">
+          <div class="form-group" id="group-source">
+            <label for="source" class="form-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Source City
+            </label>
+            <div class="select-wrapper">
+              <select id="source" name="source" required>
+                <option value="" disabled selected>From</option>
+                <option value="Banglore">Bangalore</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Kolkata">Kolkata</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Chennai">Chennai</option>
+              </select>
+              <div class="select-arrow">▾</div>
+            </div>
+          </div>
+
+          <div class="swap-btn-wrapper">
+            <button type="button" class="swap-btn" onclick="swapCities()" title="Swap cities">
+              ⇄
+            </button>
+          </div>
+
+          <div class="form-group" id="group-dest">
+            <label for="destination" class="form-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Destination City
+            </label>
+            <div class="select-wrapper">
+              <select id="destination" name="destination" required>
+                <option value="" disabled selected>To</option>
+                <option value="New Delhi">New Delhi</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Banglore">Bangalore</option>
+                <option value="Kolkata">Kolkata</option>
+                <option value="Cochin">Cochin</option>
+                <option value="Hyderabad">Hyderabad</option>
+              </select>
+              <div class="select-arrow">▾</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Date & Time -->
+        <div class="form-row triple">
+          <div class="form-group" id="group-date">
+            <label for="journey_date" class="form-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              Journey Date
+            </label>
+            <input type="date" id="journey_date" name="journey_date" required />
+          </div>
+
+          <div class="form-group" id="group-dep">
+            <label for="dep_time" class="form-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Departure Time
+            </label>
+            <input type="time" id="dep_time" name="dep_time" required />
+          </div>
+
+          <div class="form-group" id="group-arr">
+            <label for="arr_time" class="form-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Arrival Time
+            </label>
+            <input type="time" id="arr_time" name="arr_time" required />
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-submit-row">
+          <button type="submit" class="predict-btn" id="predictBtn">
+            <span class="btn-content">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m22 2-7 20-4-9-9-4z" />
+              </svg>
+              Predict My Fare
+            </span>
+            <div class="btn-loader" id="btnLoader">
+              <div class="loader-ring"></div>
+            </div>
+          </button>
+        </div>
+      </form>
+
+      <!-- Result Card -->
+      <div class="result-panel" id="resultPanel">
+        <div class="result-card" id="resultCard">
+          <div class="result-header">
+            <div class="result-icon">✈</div>
+            <div class="result-title">Predicted Fare</div>
+          </div>
+          <div class="result-price" id="resultPrice">—</div>
+          <div class="result-route" id="resultRoute"></div>
+          <div class="result-meta" id="resultMeta"></div>
+          <div class="result-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            Prices may vary. This is an AI estimate based on historical data.
+          </div>
+        </div>
+        <div class="error-card" id="errorCard" style="display:none">
+          <div class="error-icon">⚠</div>
+          <div class="error-msg" id="errorMsg">Something went wrong. Please try again.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-section" id="how-it-works">
+    <div class="section-header">
+      <div class="section-badge">Process</div>
+      <h2 class="section-title">How SkyFare AI Works</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">📋</div>
+        <h3 class="step-title">Enter Details</h3>
+        <p class="step-desc">Fill in your airline, route, date, and travel preferences.</p>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤖</div>
+        <h3 class="step-title">AI Analysis</h3>
+        <p class="step-desc">Our ML model analyzes 500,000+ historical fare data points.</p>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">💰</div>
+        <h3 class="step-title">Get Prediction</h3>
+        <p class="step-desc">Receive an instant, accurate price estimate for your route.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features-section" id="features">
+    <div class="section-header">
+      <div class="section-badge">Why SkyFare AI</div>
+      <h2 class="section-title">Built for Smart Travelers</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="--clr: #6c63ff">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+        </div>
+        <h3>Lightning Fast</h3>
+        <p>Get your fare prediction in under a second using optimized ML inference.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="--clr: #f59e0b">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </div>
+        <h3>Highly Accurate</h3>
+        <p>Random Forest model trained on real Indian aviation data achieves 88% accuracy.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="--clr: #10b981">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+          </svg>
+        </div>
+        <h3>Real Data Insights</h3>
+        <p>Powered by 500K+ flight records from major Indian airlines and routes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="--clr: #ec4899">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+            <line x1="12" y1="18" x2="12.01" y2="18" />
+          </svg>
+        </div>
+        <h3>Mobile Friendly</h3>
+        <p>Fully responsive design — use it seamlessly on any device.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="--clr: #06b6d4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+        </div>
+        <h3>All Major Routes</h3>
+        <p>Covers all major domestic Indian flight routes and airlines.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap" style="--clr: #f97316">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+        </div>
+        <h3>Price Trends</h3>
+        <p>Understand how fares vary by time, airline, and number of stops.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="brand-icon small">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+          </svg>
+        </div>
+        <span>SkyFare AI</span>
+      </div>
+      <p class="footer-copy">© 2026 SkyFare AI. Powered by Machine Learning. Built with ❤ for smart travelers.</p>
+      <p class="footer-copy">Made By Prakash Sarvaiya</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+
+</html>
